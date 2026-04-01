@@ -159,11 +159,15 @@ pub enum ExecuteMsg {
         /// Updated unbonding period for this chain.
         unbonding_period_seconds: Option<u64>,
     },
+
     /// Receives rewards from the native chain.
     ReceiveRewards {},
 
     /// Rebase the LST by claiming all current pending rewards and restaking them.
     Rebase {},
+
+    /// Call the staker contract to receive the unstaked tokens for the specified batch.
+    ReceiveBatch { batch_id: BatchId },
 
     /// Receives unstaked tokens from the native chain.
     ReceiveUnstakedTokens {
@@ -185,12 +189,10 @@ pub enum ExecuteMsg {
         /// Updated total protocol rewards.
         total_reward_amount: Uint128,
     },
+
     SlashBatches {
         new_amounts: Vec<BatchExpectedAmount>,
     },
-
-    /// Call Staker to received unstaked tokens for specific batch
-    ReceiveBatch { batch_id: BatchId },
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -341,7 +343,7 @@ pub enum StakerExecuteMsg {
     ///
     /// This must only be callable by the LST hub itself.
     Rebase {},
-    /// Receive unstaked tokens to mark batch as received
+    /// Receive the unstaked tokens for a completed batch.
     ///
     /// This must only be callable by the LST hub itself.
     ReceiveUnstakedTokens { batch_id: BatchId },
